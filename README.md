@@ -26,6 +26,7 @@ Opinionated iPhone SwiftUI component docs for iOS 26+, written in a consistent, 
 - [Image](./Image.md)
 - [Inline Message](./Inline%20Message.md)
 - [Link](./Link.md)
+- [Liquid Glass](./Liquid%20Glass.md)
 - [List](./List.md)
 - [List Row](./List%20Row.md)
 - [Localization](./Localization.md)
