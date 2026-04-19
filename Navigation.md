@@ -298,7 +298,7 @@ import SwiftUI
 
 enum AppTab: Hashable {
     case home
-    case search
+    case library
     case settings
 }
 
@@ -309,39 +309,39 @@ enum HomeRoute: Hashable, Codable {
 struct AppRoot: View {
     @State private var selectedTab: AppTab = .home
     @State private var homePath: [HomeRoute] = []
-    @State private var searchPath: [String] = []
+    @State private var libraryPath: [String] = []
     @State private var settingsPath: [String] = []
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            NavigationStack(path: $homePath) {
-                Text("Home")
-                    .navigationTitle("Home")
-                    .navigationDestination(for: HomeRoute.self) { route in
-                        switch route {
-                        case .detail(let id):
-                            Text("Detail \(id)")
-                                .navigationTitle("Detail")
-                                .navigationBarTitleDisplayMode(.inline)
+            Tab("Home", systemImage: "house", value: .home) {
+                NavigationStack(path: $homePath) {
+                    Text("Home")
+                        .navigationTitle("Home")
+                        .navigationDestination(for: HomeRoute.self) { route in
+                            switch route {
+                            case .detail(let id):
+                                Text("Detail \(id)")
+                                    .navigationTitle("Detail")
+                                    .navigationBarTitleDisplayMode(.inline)
+                            }
                         }
-                    }
+                }
             }
-            .tabItem { Label("Home", systemImage: "house") }
-            .tag(AppTab.home)
 
-            NavigationStack(path: $searchPath) {
-                Text("Search")
-                    .navigationTitle("Search")
+            Tab("Library", systemImage: "books.vertical", value: .library) {
+                NavigationStack(path: $libraryPath) {
+                    Text("Library")
+                        .navigationTitle("Library")
+                }
             }
-            .tabItem { Label("Search", systemImage: "magnifyingglass") }
-            .tag(AppTab.search)
 
-            NavigationStack(path: $settingsPath) {
-                Text("Settings")
-                    .navigationTitle("Settings")
+            Tab("Settings", systemImage: "gearshape", value: .settings) {
+                NavigationStack(path: $settingsPath) {
+                    Text("Settings")
+                        .navigationTitle("Settings")
+                }
             }
-            .tabItem { Label("Settings", systemImage: "gearshape") }
-            .tag(AppTab.settings)
         }
     }
 }
@@ -408,27 +408,27 @@ struct RootView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            NavigationStack(path: $inboxPath) {
-                Text("Inbox")
-                    .navigationTitle("Inbox")
-                    .navigationDestination(for: InboxRoute.self) { route in
-                        switch route {
-                        case .message(let id):
-                            Text("Message \(id)")
-                                .navigationTitle("Message")
-                                .navigationBarTitleDisplayMode(.inline)
+            Tab("Inbox", systemImage: "tray", value: .inbox) {
+                NavigationStack(path: $inboxPath) {
+                    Text("Inbox")
+                        .navigationTitle("Inbox")
+                        .navigationDestination(for: InboxRoute.self) { route in
+                            switch route {
+                            case .message(let id):
+                                Text("Message \(id)")
+                                    .navigationTitle("Message")
+                                    .navigationBarTitleDisplayMode(.inline)
+                            }
                         }
-                    }
+                }
             }
-            .tabItem { Label("Inbox", systemImage: "tray") }
-            .tag(Tab.inbox)
 
-            NavigationStack {
-                Text("Settings")
-                    .navigationTitle("Settings")
+            Tab("Settings", systemImage: "gearshape", value: .settings) {
+                NavigationStack {
+                    Text("Settings")
+                        .navigationTitle("Settings")
+                }
             }
-            .tabItem { Label("Settings", systemImage: "gearshape") }
-            .tag(Tab.settings)
         }
         .onOpenURL { url in
             guard url.host == "message",

@@ -34,7 +34,6 @@ struct CheckoutView: View {
             .padding(.horizontal)
             .padding(.top, 8)
             .padding(.bottom, 12)
-            .background(.regularMaterial)
         }
     }
 
@@ -49,6 +48,7 @@ struct CheckoutView: View {
 - Keep one primary action
 - Use `safeAreaInset(edge: .bottom)`
 - Let content scroll behind or above it cleanly
+- Start with just the button; add extra background treatment only when busy content makes separation necessary
 
 ### Don't
 

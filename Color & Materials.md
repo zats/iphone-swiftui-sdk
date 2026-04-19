@@ -97,24 +97,28 @@ Bad places:
 Use materials when a surface should float above content.
 
 ```swift
-.safeAreaInset(edge: .bottom) {
-    Button("Place Order") {
-        placeOrder()
+ZStack(alignment: .bottom) {
+    MapPreview()
+
+    VStack(alignment: .leading, spacing: 4) {
+        Text("Cafe")
+        Text("5 min away")
+            .foregroundStyle(.secondary)
     }
-    .buttonStyle(.glassProminent)
-    .buttonSizing(.flexible)
     .padding(.horizontal)
-    .padding(.top, 8)
-    .padding(.bottom, 12)
-    .background(.regularMaterial)
+    .padding(.vertical, 12)
+    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+    .padding()
 }
 ```
 
 Good fits:
 
-- bottom call to action
 - floating summaries
 - overlays above imagery
+- small supporting surfaces that need separation from busy content
+
+If a bottom call to action sits over especially busy media, a restrained material container can help. It should not be the default shell treatment.
 
 Do not add material everywhere. If everything floats, nothing does.
 

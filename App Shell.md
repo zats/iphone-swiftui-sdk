@@ -48,7 +48,7 @@ struct RootView: View {
     }
 }
 
-enum AppTab {
+enum AppTab: Hashable {
     case home
     case library
     case profile
@@ -60,12 +60,13 @@ struct HomeTab: View {
             HomeScreen()
                 .navigationTitle("Home")
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .primaryAction) {
                         Button {
-                            // Search or compose
+                            // Create or add
                         } label: {
-                            Image(systemName: "magnifyingglass")
+                            Image(systemName: "plus")
                         }
+                        .accessibilityLabel("Add Item")
                     }
                 }
         }
@@ -80,32 +81,42 @@ struct HomeTab: View {
 Use `TabView` when each tab is a destination, not an action. Keep each tab’s navigation state separate.
 
 ```swift
+enum AppTab: Hashable {
+    case inbox
+    case projects
+    case search
+}
+
 struct RootView: View {
+    @State private var selectedTab: AppTab = .inbox
+    @State private var query = ""
+
     var body: some View {
-        TabView {
-            Tab("Inbox", systemImage: "tray") {
+        TabView(selection: $selectedTab) {
+            Tab("Inbox", systemImage: "tray", value: .inbox) {
                 NavigationStack {
                     InboxScreen()
                 }
             }
 
-            Tab("Projects", systemImage: "folder") {
+            Tab("Projects", systemImage: "folder", value: .projects) {
                 NavigationStack {
                     ProjectsScreen()
                 }
             }
 
-            Tab("Search", systemImage: "magnifyingglass", role: .search) {
+            Tab("Search", systemImage: "magnifyingglass", value: .search, role: .search) {
                 NavigationStack {
-                    SearchScreen()
+                    SearchScreen(query: query)
                 }
             }
         }
+        .searchable(text: $query, prompt: "Search")
     }
 }
 ```
 
-Use a Search tab only when search is a top-level destination. If search only filters the current tab’s content, keep it inside that tab with `searchable`.
+Use a Search tab only when search is a top-level destination. In that pattern, mark exactly one tab with `role: .search` and put `.searchable(...)` on the `TabView`. If search only filters the current tab’s content, keep it inside that tab with `searchable`.
 
 ### Single-Flow App Shell
 
@@ -144,6 +155,7 @@ Default rule:
 
 - Search that filters the current screen: `searchable`
 - Search that is a destination with its own empty state, history, or suggestions: Search tab
+- If search is a tab-level destination, put `.searchable(...)` on the `TabView` and mark one tab with `role: .search`
 
 ### Toolbar Structure
 
@@ -195,6 +207,7 @@ Use sheets for related tasks, not for primary navigation.
 ```swift
 struct InboxScreen: View {
     @State private var showingComposer = false
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         List(messages) { message in
@@ -215,11 +228,15 @@ struct InboxScreen: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
-                            Button("Cancel") {}
+                            Button("Cancel") {
+                                dismiss()
+                            }
                         }
 
                         ToolbarItem(placement: .confirmationAction) {
-                            Button("Send") {}
+                            Button("Send") {
+                                dismiss()
+                            }
                         }
                     }
             }
@@ -280,11 +297,12 @@ struct CheckoutScreen: View {
             .padding(.horizontal)
             .padding(.top, 8)
             .padding(.bottom, 12)
-            .background(.regularMaterial)
         }
     }
 }
 ```
+
+Start with the button alone. Add a material-backed container only when the content behind it is busy enough to hurt legibility.
 
 ```swift
 struct PhotoScreen: View {
@@ -302,7 +320,6 @@ struct PhotoScreen: View {
             )
             .ignoresSafeArea()
         }
-        .toolbarBackground(.clear, for: .navigationBar)
     }
 }
 ```
@@ -398,9 +415,10 @@ NavigationStack {
 
 ### Background and Bar Controls
 
-- `toolbarBackground(_:for:)` adjusts bar background treatment when the default is not enough
+- `toolbarBackground(_:for:)` is a last resort when the system default still fails a real product requirement
 - `toolbar(_:for:)` controls visibility of system-managed bars
 - Prefer `Color(.systemBackground)` or standard grouped backgrounds for content
+- Do not clear or fake bars just to chase a full-bleed look
 - Reserve custom materials for rare branded moments, not the default shell
 
 ## Common Patterns
