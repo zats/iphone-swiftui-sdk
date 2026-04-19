@@ -23,6 +23,7 @@ Opinionated iPhone SwiftUI component docs for iOS 26+, written in a consistent, 
 - [Full-Screen Cover](./Full-Screen%20Cover.md)
 - [Group Box](./Group%20Box.md)
 - [Haptics](./Haptics.md)
+- [Human Interface Guidelines](./Human%20Interface%20Guidelines.md)
 - [Image](./Image.md)
 - [Inline Message](./Inline%20Message.md)
 - [Link](./Link.md)
