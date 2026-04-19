@@ -28,6 +28,7 @@ Opinionated iPhone SwiftUI component docs for iOS 26+, written in a consistent, 
 - [Link](./Link.md)
 - [List](./List.md)
 - [List Row](./List%20Row.md)
+- [Localization](./Localization.md)
 - [Loading State](./Loading%20State.md)
 - [Map](./Map.md)
 - [Menu](./Menu.md)
